@@ -1,6 +1,9 @@
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.regex.MatchResult;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -21,8 +24,9 @@ public class MyMapper extends Mapper<LongWritable, Text, Text, NullWritable> {
 	// Fprivate Text videoName = new Text();
 	private String revision = "";
 	public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
-
-	
+		String text = "";
+		String[] externalLinksMain; 
+		String[] externalLinks;
 		try {
 
 			InputStream is = new ByteArrayInputStream(value.toString().getBytes());
@@ -44,9 +48,22 @@ public class MyMapper extends Mapper<LongWritable, Text, Text, NullWritable> {
 					String revNode = eElement.getElementsByTagName("revision").item(0).getTextContent();
 
 					String title = eElement.getElementsByTagName("title").item(0).getTextContent();
+						text = eElement.getElementsByTagName("text").item(0).getTextContent();
+					 externalLinksMain = text.split("(?<=== Collegamenti esterni ==)");	
+					 externalLinks =  externalLinksMain[1].split("\n");
+					 
+					 for(int j = 0; j <  externalLinks.length; j++)
+					 {
+						 Pattern prl = Pattern.compile("(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/)?[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?");
+						 Matcher ml = prl.matcher(externalLinks[j]);
+						 if(ml.find()) {
+							 MatchResult mlr = ml.toMatchResult();
+							 context.write(new Text(mlr.group(0) + "," + title), NullWritable.get());
+						 }						 
+					 }
 					
+					 
 					
-					context.write(new Text(revision + "," + title), NullWritable.get());
 
 				}
 			}
