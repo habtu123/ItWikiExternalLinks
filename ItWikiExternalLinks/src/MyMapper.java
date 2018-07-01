@@ -1,3 +1,4 @@
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,6 +9,7 @@ import java.util.regex.Pattern;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
@@ -19,16 +21,12 @@ import org.w3c.dom.NodeList;
 
 public class MyMapper extends Mapper<LongWritable, Text, Text, NullWritable> {
 
-	// private static final Log LOG = LogFactory.getLog(MyMapper.class);
-	
-	// Fprivate Text videoName = new Text();
 	private String revision = "";
 	public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
 		String text = "";
 		String[] externalLinksMain; 
 		String[] externalLinks;
 		try {
-
 			InputStream is = new ByteArrayInputStream(value.toString().getBytes());
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -37,7 +35,7 @@ public class MyMapper extends Mapper<LongWritable, Text, Text, NullWritable> {
 			doc.getDocumentElement().normalize();
 
 			NodeList nList = doc.getElementsByTagName("page");
-
+			//context.write(new Text("el_from \t Title \t External Link"), NullWritable.get());
 			for (int temp = 0; temp < nList.getLength(); temp++) {
 
 				Node nNode = nList.item(temp);
@@ -49,6 +47,8 @@ public class MyMapper extends Mapper<LongWritable, Text, Text, NullWritable> {
 
 					String title = eElement.getElementsByTagName("title").item(0).getTextContent();
 						text = eElement.getElementsByTagName("text").item(0).getTextContent();
+					String id = eElement.getElementsByTagName("id").item(0).getTextContent(); 
+					
 					 externalLinksMain = text.split("(?<=== Collegamenti esterni ==)");	
 					 externalLinks =  externalLinksMain[1].split("\n");
 					 
@@ -58,13 +58,10 @@ public class MyMapper extends Mapper<LongWritable, Text, Text, NullWritable> {
 						 Matcher ml = prl.matcher(externalLinks[j]);
 						 if(ml.find()) {
 							 MatchResult mlr = ml.toMatchResult();
-							 context.write(new Text(mlr.group(0) + "," + title), NullWritable.get());
+							 context.write(new Text(id+ "\t" + title + "\t"+ mlr.group(0)), NullWritable.get());
+							// context.write(new Text(title),mynull.get());
 						 }						 
 					 }
-					
-					 
-					
-
 				}
 			}
 		} catch (Exception e) {

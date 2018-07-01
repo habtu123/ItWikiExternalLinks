@@ -1,3 +1,4 @@
+
 import java.io.IOException;
 import java.util.List;
 import org.apache.hadoop.fs.BlockLocation;
@@ -28,7 +29,7 @@ public class XmlInputFormat extends TextInputFormat {
     }
  
     public static class XmlRecordReader extends
-            RecordReader<LongWritable, Text> {
+        RecordReader<LongWritable, Text> {
         private byte[] startTag;
         private byte[] endTag;
         private long start;
@@ -53,8 +54,7 @@ public class XmlInputFormat extends TextInputFormat {
  
             FileSystem fs = file.getFileSystem(tac.getConfiguration());
             fsin = fs.open(fileSplit.getPath());
-            fsin.seek(start);
- 
+            fsin.seek(start); 
         }
  
         @Override

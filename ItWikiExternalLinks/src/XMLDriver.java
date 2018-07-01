@@ -1,4 +1,5 @@
 
+
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.conf.*;
@@ -29,21 +30,25 @@ public class XMLDriver {
  
             conf.set("START_TAG_KEY", "<page>");
             conf.set("END_TAG_KEY", "</page>");
+            //conf.set(CSVOutputFormat.CSV_TOKEN_SEPARATOR_CONFIG, ":");
  
             Job job = Job.getInstance(conf, "XML Processing Processing");
             job.setJarByClass(XMLDriver.class);
             job.setMapperClass(MyMapper.class);
- 
+            job.setReducerClass(MyReducer.class);
+            
             job.setNumReduceTasks(0);
  
             job.setInputFormatClass(XmlInputFormat.class);
-            // job.setOutputValueClass(TextOutputFormat.class);
+            job.setOutputValueClass(IntWritable.class);
  
             job.setMapOutputKeyClass(Text.class);
-            job.setMapOutputValueClass(LongWritable.class);
- 
+            job.setMapOutputValueClass(IntWritable.class);
+            
+           
             job.setOutputKeyClass(Text.class);
-            job.setOutputValueClass(LongWritable.class);
+            job.setOutputValueClass(IntWritable.class);
+            
  
             FileInputFormat.addInputPath(job, new Path(args[0]));
             FileOutputFormat.setOutputPath(job, new Path(args[1]));
