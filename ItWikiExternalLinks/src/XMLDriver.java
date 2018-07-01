@@ -1,5 +1,7 @@
 
 
+
+
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.conf.*;
@@ -16,11 +18,9 @@ public class XMLDriver {
      * @param args
      */
     public static void main(String[] args) {
-        try {
- 
+        try { 
             Configuration conf = new Configuration();
             // conf.setInt(FixedLengthInputFormat.FIXED_RECORD_LENGTH, 2048);
- 
             // OR alternatively you can set it this way, the name of the
             // property is
             // "mapreduce.input.fixedlengthinputformat.record.length"
@@ -31,7 +31,8 @@ public class XMLDriver {
             conf.set("START_TAG_KEY", "<page>");
             conf.set("END_TAG_KEY", "</page>");
             //conf.set(CSVOutputFormat.CSV_TOKEN_SEPARATOR_CONFIG, ":");
- 
+            conf.set("mapredudce.textoutputformat.separatorText", "\t");
+            
             Job job = Job.getInstance(conf, "XML Processing Processing");
             job.setJarByClass(XMLDriver.class);
             job.setMapperClass(MyMapper.class);
