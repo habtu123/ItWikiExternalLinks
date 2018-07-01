@@ -1,3 +1,5 @@
+package it.wiki.hadoop.externallinks;
+
 
 
 
@@ -19,7 +21,7 @@ import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 
  
-public class XmlInputFormat extends TextInputFormat {
+public class XMLInputFormat extends TextInputFormat {
     public static final String START_TAG_KEY = "<page>";
     public static final String END_TAG_KEY = "</page>";
  

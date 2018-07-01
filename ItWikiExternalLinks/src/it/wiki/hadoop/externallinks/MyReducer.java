@@ -1,5 +1,4 @@
-
-
+package it.wiki.hadoop.externallinks;
 
 import java.io.IOException;
 
@@ -21,3 +20,4 @@ public class MyReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
 	}
 
 }
+

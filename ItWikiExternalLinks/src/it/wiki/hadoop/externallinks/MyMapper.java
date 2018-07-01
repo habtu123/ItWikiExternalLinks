@@ -1,5 +1,4 @@
-
-
+package it.wiki.hadoop.externallinks;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
