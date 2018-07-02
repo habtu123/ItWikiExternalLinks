@@ -6,6 +6,7 @@ import org.apache.hadoop.conf.*;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapred.TextOutputFormat;
 import org.apache.hadoop.mapreduce.*;
+import org.apache.hadoop.mapreduce.lib.chain.ChainMapper;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.GenericOptionsParser;
@@ -29,14 +30,29 @@ public class ExtLinks {
 	            conf.set("mapredudce.textoutputformat.separatorText", "\t");
 	            
 	            Job job = Job.getInstance(conf, "XML Processing Processing");
+	            FileInputFormat.addInputPath(job, new Path(args[0]));
+	            FileOutputFormat.setOutputPath(job, new Path(args[1]));
 	            job.setJarByClass(ExtLinks.class);
+	            
+//	            Configuration map1Conf = new Configuration(false);
+//	            
+//	            
+//	            ChainMapper.addMapper(job, MyMapper.class, XMLInputFormat.class, 
+//	            		Text.class, Text.class, NullWritable.class, map1Conf);
+//	           
+//	            Configuration map2Conf = new Configuration(false);
+//	            
+//	            ChainMapper.addMapper(job, SecondMapper.class, NullWritable.class, Text.class, 
+//	            		Text.class, IntWritable.class, map2Conf);
+	            
+	           
 	            job.setMapperClass(MyMapper.class);
 	            job.setReducerClass(MyReducer.class);
 	            
-	            job.setNumReduceTasks(0);
+	            
+	            //job.setNumReduceTasks(0);
 	            
 	            job.setInputFormatClass(XMLInputFormat.class);
-	           // job.setInputFormatClass(XmlInputFormat.class);
 	            job.setOutputValueClass(IntWritable.class);
 	 
 	            job.setMapOutputKeyClass(Text.class);
@@ -47,9 +63,7 @@ public class ExtLinks {
 	            job.setOutputValueClass(IntWritable.class);
 	            
 	 
-	            FileInputFormat.addInputPath(job, new Path(args[0]));
-	            FileOutputFormat.setOutputPath(job, new Path(args[1]));
-	 
+	            
 	            job.waitForCompletion(true);
 	 
 	        } catch (Exception e) {

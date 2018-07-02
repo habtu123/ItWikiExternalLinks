@@ -16,7 +16,7 @@ public class MyReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
 			sum += val.get();
 		}
 		result.set(sum);
-		context.write(key, result);
+		context.write(new Text(key+","), result);
 	}
 
 }

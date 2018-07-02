@@ -20,21 +20,24 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public class MyMapper extends Mapper<LongWritable, Text, Text, NullWritable> {
+public class MyMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
 
 	private String revision = "";
 	public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
 		String text = "";
 		String[] externalLinksMain; 
 		String[] externalLinks;
+		long idt  = 0 ;
+		int increment = 0; 
 		try {
 			InputStream is = new ByteArrayInputStream(value.toString().getBytes());
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 			Document doc = dBuilder.parse(is);
-
+			
+			
 			doc.getDocumentElement().normalize();
-
+			
 			NodeList nList = doc.getElementsByTagName("page");
 			//context.write(new Text("el_from \t Title \t External Link"), NullWritable.get());
 			for (int temp = 0; temp < nList.getLength(); temp++) {
@@ -43,7 +46,8 @@ public class MyMapper extends Mapper<LongWritable, Text, Text, NullWritable> {
 				if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 
 					Element eElement = (Element) nNode;
-
+					idt = context.getTaskAttemptID().getTaskID().getId();
+					increment = context.getConfiguration().getInt("mapred.map.tasks", 0);
 					String revNode = eElement.getElementsByTagName("revision").item(0).getTextContent();
 
 					String title = eElement.getElementsByTagName("title").item(0).getTextContent();
@@ -59,7 +63,8 @@ public class MyMapper extends Mapper<LongWritable, Text, Text, NullWritable> {
 						 Matcher ml = prl.matcher(externalLinks[j]);
 						 if(ml.find()) {
 							 MatchResult mlr = ml.toMatchResult();
-							 context.write(new Text(id+ "\t" + title + "\t"+ mlr.group(0)), NullWritable.get());
+							 idt += increment;
+							 context.write(new Text(id+","+title + ","+ mlr.group(0)), new IntWritable(1));
 							// context.write(new Text(title),mynull.get());
 						 }						 
 					 }
