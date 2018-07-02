@@ -8,14 +8,14 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Mapper.Context;
 
-public class SecondMapper extends Mapper<Object, Text, Text, Text> {
+public class SecondMapper extends Mapper<Text, IntWritable, Text, IntWritable> {
 	private final static IntWritable ONE = new IntWritable(1);
 	private Text link = new Text();
-	public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
+	public void map(Text key, Text value, Context context) throws IOException, InterruptedException {
 		String[] line; 
-		line = value.toString().split("\t");
+		line = key.toString().split(",");
 		link.set(line[1]);
 		
-		//context.write(link, ONE);
+		context.write(link, ONE);
 	}
 }

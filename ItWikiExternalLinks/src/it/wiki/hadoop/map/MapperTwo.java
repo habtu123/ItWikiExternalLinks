@@ -1,5 +1,4 @@
-package it.wiki.hadoop.externallinks;
-
+package it.wiki.hadoop.map;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,14 +14,16 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Mapper.Context;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public class MyMapper extends Mapper<LongWritable, Text, Text, NullWritable> {
+import it.wiki.hadoop.externallinks.*;
 
-	private String revision = "";
+public class MapperTwo extends Mapper<LongWritable, Text, Text, IntWritable>{
+
 	public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
 		String text = "";
 		String[] externalLinksMain; 
@@ -64,7 +65,7 @@ public class MyMapper extends Mapper<LongWritable, Text, Text, NullWritable> {
 						 if(ml.find()) {
 							 MatchResult mlr = ml.toMatchResult();
 							 idt += increment;
-							 context.write(new Text(id+","+title + ","+ mlr.group(0)), NullWritable.get());
+							 context.write(new Text(id+","+title), new IntWritable(1));
 							// context.write(new Text(title),mynull.get());
 						 }						 
 					 }
@@ -75,5 +76,4 @@ public class MyMapper extends Mapper<LongWritable, Text, Text, NullWritable> {
 		}
 
 	}
-
 }
