@@ -14,23 +14,19 @@ public class ExtLinksTwo {
 	 public static void main(String[] args) {
 	        try { 
 	            Configuration conf = new Configuration();
-	           
 	 
 	            conf.set("START_TAG_KEY", "<page>");
 	            conf.set("END_TAG_KEY", "</page>");
 	            conf.set("mapredudce.textoutputformat.separatorText", ",");
 	            
-	            Job job = Job.getInstance(conf, "XML Processing Processing");
+	            Job job = Job.getInstance(conf, "");
 	            FileInputFormat.addInputPath(job, new Path(args[0]));
 	            FileOutputFormat.setOutputPath(job, new Path(args[1]));
 	            job.setJarByClass(ExtLinks.class);	            
-	           
-	            
-	           
+	    
 	            job.setMapperClass(MapperTwo.class);
+	            job.setCombinerClass(ReducerTwo.class);
 	            job.setReducerClass(ReducerTwo.class);
-//	            job.setMapperClass(SecondMapper.class);
-	           // job.setNumReduceTasks(0);
 	            
 	            job.setInputFormatClass(XMLInputFormat.class);
 	            job.setOutputValueClass(IntWritable.class);
@@ -44,10 +40,8 @@ public class ExtLinksTwo {
 	            job.waitForCompletion(true);
 	 
 	        } catch (Exception e) {
-	           // LogWriter.getInstance().WriteLog("Driver Error: " + e.getMessage());
 	            System.out.println(e.getMessage().toString());
 	        }
-	        // job.setReducerClass(ClickReducer.class);
 	 
 	    }
 }

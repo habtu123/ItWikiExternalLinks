@@ -27,7 +27,7 @@ public class ExtLinks {
 	 
 	            conf.set("START_TAG_KEY", "<page>");
 	            conf.set("END_TAG_KEY", "</page>");
-	            conf.set("mapredudce.textoutputformat.separatorText", ",");
+	//            conf.set("mapredudce.textoutputformat.separatorText", ",");
 	            
 	            Job job = Job.getInstance(conf, "XML Processing Processing");
 	            FileInputFormat.addInputPath(job, new Path(args[0]));
@@ -51,6 +51,7 @@ public class ExtLinks {
 	            job.setMapperClass(MyMapper.class);
 //	            job.setReducerClass(MyReducer.class);
 //	            job.setMapperClass(SecondMapper.class);
+	        
 	            job.setNumReduceTasks(0);
 	            
 	            job.setInputFormatClass(XMLInputFormat.class);

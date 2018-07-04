@@ -60,7 +60,7 @@ public class MapperTwo extends Mapper<LongWritable, Text, Text, IntWritable>{
 					 
 					 for(int j = 0; j <  externalLinks.length; j++)
 					 {
-						 Pattern prl = Pattern.compile("(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/)?[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?");
+						 Pattern prl = Pattern.compile("(?:(?:https?|ftp):\\/\\/)?[\\w/\\-?=%.]+\\.[\\w/\\-?=%.]+");
 						 Matcher ml = prl.matcher(externalLinks[j]);
 						 if(ml.find()) {
 							 MatchResult mlr = ml.toMatchResult();

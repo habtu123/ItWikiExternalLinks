@@ -20,14 +20,14 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public class MyMapper extends Mapper<LongWritable, Text, Text, NullWritable> {
+public class MyMapper extends Mapper<LongWritable, Text, Text, NullWritable>  {
 
-	private String revision = "";
+	//private String revision = "";
 	public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
 		String text = "";
 		String[] externalLinksMain; 
 		String[] externalLinks;
-		long idt  = 0 ;
+		//long idt  = 0 ;
 		int increment = 0; 
 		try {
 			InputStream is = new ByteArrayInputStream(value.toString().getBytes());
@@ -42,13 +42,12 @@ public class MyMapper extends Mapper<LongWritable, Text, Text, NullWritable> {
 			//context.write(new Text("el_from \t Title \t External Link"), NullWritable.get());
 			for (int temp = 0; temp < nList.getLength(); temp++) {
 
-				Node nNode = nList.item(temp);
+				Node nNode = nList.item(0);
 				if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 
 					Element eElement = (Element) nNode;
-					idt = context.getTaskAttemptID().getTaskID().getId();
-					increment = context.getConfiguration().getInt("mapred.map.tasks", 0);
-					String revNode = eElement.getElementsByTagName("revision").item(0).getTextContent();
+					//increment = context.getConfiguration().getInt("mapred.map.tasks", 0);
+					//String revNode = eElement.getElementsByTagName("revision").item(0).getTextContent();
 
 					String title = eElement.getElementsByTagName("title").item(0).getTextContent();
 						text = eElement.getElementsByTagName("text").item(0).getTextContent();
@@ -59,11 +58,10 @@ public class MyMapper extends Mapper<LongWritable, Text, Text, NullWritable> {
 					 
 					 for(int j = 0; j <  externalLinks.length; j++)
 					 {
-						 Pattern prl = Pattern.compile("(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/)?[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?");
+						 Pattern prl = Pattern.compile("(?:(?:https?|ftp):\\/\\/)?[\\w/\\-?=%.]+\\.[\\w/\\-?=%.]+");
 						 Matcher ml = prl.matcher(externalLinks[j]);
 						 if(ml.find()) {
 							 MatchResult mlr = ml.toMatchResult();
-							 idt += increment;
 							 context.write(new Text(id+","+title + ","+ mlr.group(0)), NullWritable.get());
 							// context.write(new Text(title),mynull.get());
 						 }						 
