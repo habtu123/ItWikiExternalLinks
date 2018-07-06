@@ -16,7 +16,9 @@ public class ReducerTwo extends Reducer<Text, IntWritable, Text, IntWritable> {
 		for (IntWritable val: values) {
 			sum += val.get();
 		}
+		sum =+ result.get();
 		result.set(sum);
-		context.write(new Text(key+","), result);
+		//context.write(new Text(key), result);
 	}
+	
 }

@@ -65,7 +65,7 @@ public class MapperTwo extends Mapper<LongWritable, Text, Text, IntWritable>{
 						 if(ml.find()) {
 							 MatchResult mlr = ml.toMatchResult();
 							 idt += increment;
-							 context.write(new Text(id+","+title), new IntWritable(1));
+							 context.write(new Text(mlr.group(0)), new IntWritable(1));
 							// context.write(new Text(title),mynull.get());
 						 }						 
 					 }
